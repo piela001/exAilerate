@@ -55,6 +55,7 @@ BUZZER_GPIO = 22
 
 DISPLAY_X = 0
 DISPLAY_Y = 0
+DELAY = 2000
 
 class Player():
     """Controls buzzer."""
@@ -109,6 +110,17 @@ class ImageViewer(tk.Tk):
 		self.picture_display.config(image=self.images[-1])
 
 		self.title(img_name)
+		
+	def display_slides(self):
+		img_name = next(self.pictures)
+		image_pil = Image.open(img_name)
+
+		self.images.append(ImageTk.PhotoImage(image_pil))
+
+		self.picture_display.config(image=self.images[-1])
+
+		self.title(img_name)
+		self.after(DELAY, self.display_slides)
 
 	def next(self):
 		print("Next Slide")
@@ -118,6 +130,9 @@ class ImageViewer(tk.Tk):
 	def get_title(self):
 		return self.return_name
 		
+	def display(self):
+		self.mainloop()
+        
 	def run(self):
 		if not self.is_finished:
 			self.update_idletasks()
@@ -211,7 +226,12 @@ def main():
 
 	mode = input("Please enter 1 for party mode or 2 to configure a user: ")
 	
-	if mode == 1:
+	photo_directory = 'Photos'
+	path_list = os.listdir(photo_directory)
+	image_files = [os.path.join(photo_directory, p) for p in path_list]
+		
+	if "1" in mode:
+		common_likes = image_files
 		users = input("Please enter the names of all users seperated by a space: ")
 		user_list = users.split()
 		for user in user_list:
@@ -223,15 +243,16 @@ def main():
 			else:
 				with open(name_file) as f:
 					lines = f.read().splitlines()
-					likes_list.append(lines)
-				
+					common_likes = list(set(common_likes) & set(lines))
+		
+		print(*common_likes)
+		image_view = ImageViewer(common_likes, DISPLAY_X, DISPLAY_Y)
+		image_view.display_slides()
+		image_view.display()	
 			
-	elif mode ==2:
+	elif "2" in mode:
 		config_name = input("Enter the name of the user to configure: ").lower()
 		
-		photo_directory = 'Photos'
-		path_list = os.listdir(photo_directory)
-		image_files = [os.path.join(photo_directory, p) for p in path_list]
 		image_view = ImageViewer(image_files, DISPLAY_X, DISPLAY_Y)
 		image_view.show_slides()
 		image_view.run()
