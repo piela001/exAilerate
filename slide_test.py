@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 import os
 
 class App(tk.Tk):
+    '''Tk window/label adjusts to size of image'''
     def __init__(self, image_files, x, y, delay):
 
         tk.Tk.__init__(self)
