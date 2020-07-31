@@ -55,7 +55,7 @@ BUZZER_GPIO = 22
 
 DISPLAY_X = 0
 DISPLAY_Y = 0
-DELAY = 2000
+DELAY = 5000
 
 class Player():
     """Controls buzzer."""
@@ -97,6 +97,10 @@ class ImageViewer(tk.Tk):
 		self.picture_display.pack()
 		self.images=[]
 		self.return_name = ""
+		self.bind('<Escape>', self.toggle_screen)
+		
+	def toggle_screen(self, event):
+		self.attributes("-fullscreen", False)
         
 	def show_slides(self):
 		print("Showing Slides")
@@ -247,6 +251,8 @@ def main():
 		
 		print(*common_likes)
 		image_view = ImageViewer(common_likes, DISPLAY_X, DISPLAY_Y)
+		image_view.attributes("-fullscreen", True)
+		image_view.configure(background='black')
 		image_view.display_slides()
 		image_view.display()	
 			
