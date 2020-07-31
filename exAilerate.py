@@ -138,9 +138,8 @@ class ImageViewer(tk.Tk):
 		self.mainloop()
         
 	def run(self):
-		if not self.is_finished:
-			self.update_idletasks()
-			self.update()
+		self.update_idletasks()
+		self.update()
 		
 	def is_finished(self):
 		return self.size == self.shown_total
@@ -191,8 +190,7 @@ def preference_config(pref_file, image_view):
 	animator = Animator(leds)
 
 	camera = PiCamera(sensor_mode=4, resolution=(820, 616))
-	PrivacyLed(leds)
-
+	leds.update(Leds.privacy_on(brightness=128))
 
 	def model_loaded():
 		player.play(MODEL_LOAD_SOUND)
@@ -204,12 +202,15 @@ def preference_config(pref_file, image_view):
 
 	while not image_view.is_finished():
 		emotion = detect_emotion(model_loaded, joy_moving_average, joy_threshold_detector, animator, player)
+		animator.shutdown()
 		print(emotion)
 		if "joy" in emotion:
 			pref_file.write(image_view.get_title() + '\n')
-		image_view.next()
+		if not image_view.is_finished():
+			image_view.next()
 		
 	animator.shutdown()
+	leds.update(Leds.privacy_off())
 
 def detect_emotion(model_loaded, joy_moving_average, joy_threshold_detector, animator, player):
 	for faces, frame_size in run_inference(model_loaded):
@@ -260,18 +261,13 @@ def main():
 		config_name = input("Enter the name of the user to configure: ").lower()
 		
 		image_view = ImageViewer(image_files, DISPLAY_X, DISPLAY_Y)
+		image_view.attributes("-fullscreen", True)
+		image_view.configure(background='black')
 		image_view.show_slides()
 		image_view.run()
 
 		#configure or run
-		directory = 'usr'
-		for usr_file in os.listdir(directory):
-			filename = os.fsdecode(usr_file)
-			if config_name in filename:
-				print("User Preferences created")
-				#TODO fix if user exists
-				exit()
-				
+		directory = 'usr'				
 		name_file = os.path.join(directory, config_name)
 		print("Opening user file " + name_file)
 		pref_file = open(name_file, "w+")
