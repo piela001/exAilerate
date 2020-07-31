@@ -13,18 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import argparse
-import collections
-import contextlib
 import io
-import logging
-import math
 import os
-import queue
-import signal
 import sys
-import threading
-import time
+import collections
 
 from itertools import cycle
 import tkinter as tk
@@ -36,8 +28,6 @@ from aiy.leds import Color, Leds, Pattern, PrivacyLed
 from aiy.toneplayer import TonePlayer
 from aiy.vision.inference import CameraInference
 from aiy.vision.models import face_detection
-from aiy.vision.streaming.server import StreamingServer
-from aiy.vision.streaming import svg
 
 #definitions
 JOY_COLOR = (0, 255, 0)
@@ -202,12 +192,10 @@ def preference_config(pref_file, image_view):
 
 	while not image_view.is_finished():
 		emotion = detect_emotion(model_loaded, joy_moving_average, joy_threshold_detector, animator, player)
-		animator.shutdown()
 		print(emotion)
 		if "joy" in emotion:
 			pref_file.write(image_view.get_title() + '\n')
-		if not image_view.is_finished():
-			image_view.next()
+		image_view.next()
 		
 	animator.shutdown()
 	leds.update(Leds.privacy_off())
