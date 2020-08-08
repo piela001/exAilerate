@@ -72,6 +72,9 @@ class Animator():
     def shutdown(self):
         self._leds.update(Leds.rgb_off())
         
+# Displays all images contained within given list
+# display_slides will run a slideshow of all loaded images, use run() to start
+# show_slides will display slides one at a time using the next() function
 class ImageViewer(tk.Tk):
 	def __init__(self, image_files, x, y):
 		print("Initializing Image View")
@@ -172,6 +175,7 @@ def average_joy_score(faces):
         return sum(face.joy_score for face in faces) / len(faces)
     return 0.0
 
+# 
 def preference_config(pref_file, image_view):
 
 	leds = Leds()
