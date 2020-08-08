@@ -14,7 +14,7 @@ $ ./install.sh
 
 ### Start the Program
 ```shell
-$ ./eXilarate.py
+$ ./exAilerate.py
 ```
 - Follow the command prompt to configure all new users
 - Once everyone is configured, run the program again to start PARTY MODE!
