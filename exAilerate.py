@@ -237,6 +237,9 @@ def main():
 				with open(name_file) as f:
 					lines = f.read().splitlines()
 					common_likes = list(set(common_likes) & set(lines))
+					if len(common_likes) == 0:
+						print("Users have no common likes.")
+						exit()
 		
 		print(*common_likes)
 		image_view = ImageViewer(common_likes, DISPLAY_X, DISPLAY_Y)
